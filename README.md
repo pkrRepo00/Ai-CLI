@@ -1,113 +1,70 @@
-# AI CLI: Your Personal AI-Powered Command Line Assistant
+# AI CLI — Gemini-powered command-line assistant
 
-## 🚀 Introduction
+AI CLI is an experimental Python project that turns natural-language requests into shell commands using Google's Gemini API. It includes separate starter scripts for Windows, Linux, and macOS.
 
-Imagine having an AI-powered assistant right in your command line - one that understands your commands, automates tasks, and interacts seamlessly with your system. Enter **AI CLI**, a powerful AI agent integrated with the **Gemini API**, designed to execute commands, manage files, fetch system details, and much more - all from your terminal!
+> **Important safety warning:** this repository is a prototype, not a hardened agent. The inspected scripts pass model-generated commands to `subprocess.run(..., shell=True)` and use a simple blocklist that cannot reliably prevent dangerous commands. They execute generated commands automatically without the interactive approval described in some earlier documentation. **Do not run this on a machine or account containing important data.** Review and manually run commands yourself until execution is redesigned around explicit approval and a strict allowlist.
 
-This guide walks you through what AI CLI is, how to set it up, and how to make the most out of it. Whether you're a developer, sysadmin, or tech enthusiast, this tool will revolutionize the way you interact with your machine.
+## Current capabilities
 
-## 🔥 What is AI CLI?
+- Sends a natural-language request to the Gemini API.
+- Prints the generated command.
+- Runs the command and prints its output.
+- Loads `GEMINI_API_KEY` from the process environment or a local `.env` file.
+- Provides OS-specific starter scripts:
+  - `Gemini_Agent_Windows.py`
+  - `Gemini_Agent_Linux.py`
+  - `Gemini_Agent_MacOS.py`
 
-AI CLI is a command-line automation tool that integrates Google's Gemini AI to generate and execute system commands based on natural language input. Instead of typing out long and complex commands, you simply describe what you want to do, and the AI converts it into an executable command.
+This project is an educational starting point. The current implementation does **not** provide a robust permission system, a reliable sandbox, or dependable command safety guarantees.
 
-### ✨ Features:
-- **Natural Language Understanding**: Ask in plain English, and AI CLI translates it into a valid system command.
-- **Automation**: Run system tasks like file management, system info retrieval, and more.
-- **Customizable Safety Modes**: Choose between safe execution (only allows predefined commands) and unsafe mode (executes any command).
-- **Interactive Confirmation**: Approve commands before execution to avoid accidental actions.
-- **Logging System**: Keep track of all executed commands and AI responses.
+## Requirements
 
-## 🛠️ How to Set Up AI CLI
+- Python 3
+- A Gemini API key
+- Packages listed in `requirements.txt`
 
-### 1️⃣ Prerequisites
+The scripts currently use the legacy `google.generativeai` Python package and request the `gemini-pro` model. API/package compatibility may have changed, so verify the currently supported SDK and model name if requests fail.
 
-Before you start, ensure you have:
-- Python 3.1+ installed
-- A Google Gemini API Key (Sign up on Google AI)
-- Required dependencies installed
+## Setup
 
-### 2️⃣ Installation Steps
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/pkrRepo00/Ai-CLI.git
+   cd Ai-CLI
+   ```
+2. Install the dependencies:
+   ```bash
+   python -m pip install -r requirements.txt
+   ```
+3. Create a local `.env` file in the project root:
+   ```env
+   GEMINI_API_KEY=your_gemini_api_key
+   ```
+   Keep this key private. Never commit your `.env` file.
+4. Choose the script for your operating system:
+   ```bash
+   python Gemini_Agent_Windows.py
+   ```
+   Or use `Gemini_Agent_Linux.py` on Linux and `Gemini_Agent_MacOS.py` on macOS.
 
-#### 1. Clone the Repository:
-```bash
-git clone https://github.com/pkrRepo00/Ai-CLI.git
-cd Ai-CLI
+## Example request
+
+You can enter a request such as:
+
+```text
+User: Show files in the current directory
 ```
 
-#### 2. Install Dependencies:
-```bash
-pip install -r requirements.txt
-```
+The model returns a command. **Inspect the command instead of trusting it automatically.** Model output can be incorrect, destructive, or manipulated by untrusted input.
 
-#### 3.1 Set Up API Key:
-Add your Gemini API key to your environment variables:
+## Known limitations and recommended next steps
 
-- **macOS/Linux**:
-```bash
-export GEMINI_API_KEY="your-api-key-here"
-```
-
-- **Windows**:
-```bash
-set GEMINI_API_KEY="your-api-key-here"
-```
-#### 3.2 Set Up .env:
-In the root directory of your AI CLI project, create a `.env` file and add your API key like this:
-```bash
-GEMINI_API_KEY="your-api-key-here"
-```
-Then save it
-#### 4. Run AI CLI:
-```bash
-python Gemini_Agent_Windows.py      # For Windows
-
-python Gemini_Agent_Linux.py        # For Linux
-
-python Gemini_Agent_MacOS.py        # MacOS
-
-
-```
-
-## 🏗️ How to Use AI CLI
-
-Once launched, AI CLI will prompt you for input. Simply type your request in natural language:
-
-#### Example Commands:
-
-- **User**: List all files in the current directory  
-  **AI CLI**: `dir`
-
-- **User**: Create a file named "test.txt"  
-  **AI CLI**: `echo. > test.txt`
-
-- **User**: Move "test.txt" to the Documents folder  
-  **AI CLI**: `move test.txt C:\Users\YourName\Documents`
-
-By default, **safe mode** is enabled, preventing execution of dangerous commands. To run in unsafe mode (allowing all commands), use:
-
-```bash
-python ai_cli.py --unsafe
-```
-
-⚠️ **Use unsafe mode cautiously, as it can execute any system command!**
-
-## 📌 Additional Features
-- **Interactive Confirmation**: Before executing a command, AI CLI will ask for your confirmation.
-- **Logging**: All commands and responses are logged for review.
-- **Retry Mechanism**: AI CLI intelligently retries if command generation fails.
-
-## 🔮 Future Enhancements
-We're continuously improving AI CLI. Some upcoming features include:
-- **Voice Command Support** 🎙️
-- **Task Scheduling & Automation** 📅
-- **Cross-Platform Enhancements** 🖥️
-
-Got ideas? Contribute to the project on GitHub!
-
-## 🎉 Conclusion
-AI CLI is your AI-powered command-line assistant, making automation seamless and efficient. Whether you're managing files, checking system info, or scripting workflows, AI CLI empowers you to work smarter.
+- Replace the legacy SDK/model configuration with a currently supported Gemini SDK and model.
+- Remove automatic shell execution; show the proposed command and require explicit user approval.
+- Prefer structured, OS-specific command generation and an allowlist over substring blocklists.
+- Add timeouts, clearer error handling, and tests for command validation.
+- Add a dry-run mode and isolate file operations to a user-selected working directory.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
+Released under the MIT License. See [LICENSE](LICENSE).
